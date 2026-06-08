@@ -5,6 +5,10 @@
   "version": "0.1.0",
   "publisher": "elianguitarra",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/elianguitarra/ts-type-meter.git"
+  },
   "engines": {
     "vscode": "^1.92.0"
   },
@@ -19,6 +23,15 @@
     "onCommand:tsTypeMeter.analyzeFile"
   ],
   "main": "./out/extension.js",
+  "files": [
+    "out",
+    "src",
+    "examples",
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "tsconfig.json"
+  ],
   "contributes": {
     "commands": [
       {
@@ -62,6 +75,7 @@
   "devDependencies": {
     "@types/node": "^22.15.30",
     "@types/vscode": "^1.92.0",
+    "@vscode/vsce": "^3.9.2",
     "typescript": "^5.8.3"
   }
 }
