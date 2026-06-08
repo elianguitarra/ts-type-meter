@@ -16,8 +16,11 @@ It implements:
 - Hover reports for symbols under the cursor.
 - `TS Type Meter: Analyze Selection`.
 - `TS Type Meter: Analyze Active File`.
+- `TS Type Meter: Run Built-in Benchmark`.
 - TypeScript compiler API timing split into program build, checker resolution, and type stringification.
 - Deterministic structural complexity scoring for unions, intersections, generics, properties, signatures, and nested object shapes.
+- Cached measurements keyed by document URI, version, offset, selected range, and scoring settings.
+- A pathological fixture for comparing recursive/conditional/mapped types.
 
 ## Validation
 
@@ -31,7 +34,7 @@ vsce package --no-dependencies --allow-star-activation
 Generated artifact:
 
 ```text
-ts-type-meter-0.1.0.vsix
+ts-type-meter-0.1.1.vsix
 ```
 
 ## Payout

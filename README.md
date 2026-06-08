@@ -8,6 +8,8 @@ It adds:
 - Hover diagnostics for the symbol under the cursor.
 - Commands to analyze the current selection or the active TypeScript file.
 - A structured report that separates program build time, checker lookup time, and type stringification time.
+- Cached measurements keyed by document URI, version, cursor offset, and selected range.
+- A built-in benchmark command using a pathological TypeScript fixture.
 
 This project was built for the TSPerf Grand Challenge: a MIT-licensed VS Code plugin that helps developers see type complexity and the time needed to load a type.
 
@@ -15,6 +17,7 @@ This project was built for the TSPerf Grand Challenge: a MIT-licensed VS Code pl
 
 - `TS Type Meter: Analyze Selection`
 - `TS Type Meter: Analyze Active File`
+- `TS Type Meter: Run Built-in Benchmark`
 
 ## Metrics
 
@@ -36,6 +39,12 @@ npm run compile
 ```
 
 Then open this folder in VS Code and run the extension host.
+
+To package an installable VSIX:
+
+```powershell
+npx vsce package --no-dependencies --allow-star-activation
+```
 
 ## License
 

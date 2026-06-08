@@ -2,7 +2,7 @@
   "name": "ts-type-meter",
   "displayName": "TS Type Meter",
   "description": "VS Code extension that measures TypeScript type resolution time and structural complexity.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "elianguitarra",
   "license": "MIT",
   "repository": {
@@ -20,7 +20,8 @@
     "onLanguage:typescript",
     "onLanguage:typescriptreact",
     "onCommand:tsTypeMeter.analyzeSelection",
-    "onCommand:tsTypeMeter.analyzeFile"
+    "onCommand:tsTypeMeter.analyzeFile",
+    "onCommand:tsTypeMeter.runBenchmark"
   ],
   "main": "./out/extension.js",
   "files": [
@@ -41,6 +42,10 @@
       {
         "command": "tsTypeMeter.analyzeFile",
         "title": "TS Type Meter: Analyze Active File"
+      },
+      {
+        "command": "tsTypeMeter.runBenchmark",
+        "title": "TS Type Meter: Run Built-in Benchmark"
       }
     ],
     "configuration": {
@@ -62,6 +67,13 @@
           "minimum": 8,
           "maximum": 512,
           "description": "Maximum properties inspected while estimating type complexity."
+        },
+        "tsTypeMeter.cacheSize": {
+          "type": "number",
+          "default": 300,
+          "minimum": 0,
+          "maximum": 2000,
+          "description": "Maximum cached measurements keyed by document URI, version, offset, and range."
         }
       }
     }

@@ -21,7 +21,7 @@ type AnalyzeTarget = {
 };
 
 export function activate(context: vscode.ExtensionContext) {
-  const analyzer = new TypeAnalyzer();
+  const analyzer = new TypeAnalyzer(context.extensionUri);
   const selector: vscode.DocumentSelector = [
     { language: "typescript", scheme: "file" },
     { language: "typescriptreact", scheme: "file" }
@@ -61,6 +61,12 @@ export function activate(context: vscode.ExtensionContext) {
         await vscode.window.showTextDocument(doc, { preview: true });
       }
     }),
+    vscode.commands.registerCommand("tsTypeMeter.runBenchmark", async () => {
+      const metrics = await analyzer.runBuiltInBenchmark();
+      const content = formatMetricsTable("TS Type Meter built-in benchmark", metrics);
+      const doc = await vscode.workspace.openTextDocument({ language: "plaintext", content });
+      await vscode.window.showTextDocument(doc, { preview: true });
+    }),
     vscode.languages.registerCodeLensProvider(selector, new TypeMeterCodeLensProvider(analyzer)),
     vscode.languages.registerHoverProvider(selector, new TypeMeterHoverProvider(analyzer))
   );
@@ -71,7 +77,19 @@ export function deactivate() {
 }
 
 class TypeAnalyzer {
+  private readonly cache = new Map<string, Metric>();
+
+  constructor(private readonly extensionUri: vscode.Uri) {}
+
   analyze(target: AnalyzeTarget): Metric {
+    const cacheKey = createCacheKey(target);
+    const cached = this.cache.get(cacheKey);
+    if (cached) {
+      this.cache.delete(cacheKey);
+      this.cache.set(cacheKey, cached);
+      return { ...cached };
+    }
+
     const totalStart = performance.now();
     const programStart = performance.now();
     const setup = createProgramForDocument(target.document);
@@ -100,7 +118,7 @@ class TypeAnalyzer {
     const complexity = estimateComplexity(type, checker, config.get<number>("maxProperties", 64));
     const label = getNodeLabel(node, checker);
 
-    return {
+    const metric = {
       label,
       fileName: target.document.fileName,
       line: target.position.line + 1,
@@ -111,6 +129,8 @@ class TypeAnalyzer {
       printMs,
       totalMs: performance.now() - totalStart
     };
+    this.remember(cacheKey, metric);
+    return { ...metric };
   }
 
   analyzeTopLevel(document: vscode.TextDocument): Metric[] {
@@ -120,6 +140,28 @@ class TypeAnalyzer {
       const position = document.positionAt(node.getStart(sourceFile));
       return this.analyze({ document, position });
     });
+  }
+
+  async runBuiltInBenchmark(): Promise<Metric[]> {
+    const fixture = vscode.Uri.joinPath(this.extensionUri, "examples", "pathological-types.ts");
+    const document = await vscode.workspace.openTextDocument(fixture);
+    return this.analyzeTopLevel(document);
+  }
+
+  private remember(cacheKey: string, metric: Metric) {
+    const config = vscode.workspace.getConfiguration("tsTypeMeter");
+    const maxSize = config.get<number>("cacheSize", 300);
+    if (maxSize <= 0) {
+      return;
+    }
+    this.cache.set(cacheKey, metric);
+    while (this.cache.size > maxSize) {
+      const oldest = this.cache.keys().next().value;
+      if (oldest === undefined) {
+        break;
+      }
+      this.cache.delete(oldest);
+    }
   }
 }
 
@@ -193,6 +235,41 @@ async function showMetric(metric: Metric) {
 
   const doc = await vscode.workspace.openTextDocument({ language: "typescript", content });
   await vscode.window.showTextDocument(doc, { preview: true });
+}
+
+function formatMetricsTable(title: string, metrics: Metric[]): string {
+  const rows = metrics.map((metric) =>
+    [
+      metric.label.padEnd(34),
+      String(metric.complexity).padStart(8),
+      `${metric.totalMs.toFixed(2)}ms`.padStart(12),
+      `${metric.programMs.toFixed(2)}ms`.padStart(12),
+      `${metric.resolveMs.toFixed(2)}ms`.padStart(12),
+      `${metric.printMs.toFixed(2)}ms`.padStart(12)
+    ].join("  ")
+  );
+  return [
+    title,
+    "",
+    ["Target".padEnd(34), "Complex".padStart(8), "Total".padStart(12), "Program".padStart(12), "Resolve".padStart(12), "Print".padStart(12)].join("  "),
+    "-".repeat(94),
+    ...rows
+  ].join("\n");
+}
+
+function createCacheKey(target: AnalyzeTarget): string {
+  const rangeKey = target.range
+    ? `${target.range.start.line}:${target.range.start.character}-${target.range.end.line}:${target.range.end.character}`
+    : "cursor";
+  const config = vscode.workspace.getConfiguration("tsTypeMeter");
+  return [
+    target.document.uri.toString(),
+    target.document.version,
+    target.position.line,
+    target.position.character,
+    rangeKey,
+    config.get<number>("maxProperties", 64)
+  ].join("|");
 }
 
 function createProgramForDocument(document: vscode.TextDocument) {
