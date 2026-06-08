@@ -22,6 +22,7 @@ It implements:
 - Cached measurements keyed by document URI, version, offset, selected range, and scoring settings.
 - A pathological fixture for comparing recursive/conditional/mapped types.
 - Automated `node:test` coverage for the structural complexity scorer.
+- GitHub Actions CI that installs dependencies, compiles, runs tests, packages the VSIX, and uploads the VSIX as a workflow artifact.
 
 ## Validation
 
@@ -35,7 +36,7 @@ vsce package --no-dependencies --allow-star-activation
 Generated artifact:
 
 ```text
-ts-type-meter-0.1.2.vsix
+ts-type-meter-0.1.3.vsix
 ```
 
 ## Payout

@@ -1,5 +1,7 @@
 # TS Type Meter
 
+[![CI](https://github.com/elianguitarra/ts-type-meter/actions/workflows/ci.yml/badge.svg)](https://github.com/elianguitarra/ts-type-meter/actions/workflows/ci.yml)
+
 TS Type Meter is a VS Code extension that estimates how expensive a TypeScript type is to resolve and display.
 
 It adds:
