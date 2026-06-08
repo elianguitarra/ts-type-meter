@@ -1,0 +1,67 @@
+{
+  "name": "ts-type-meter",
+  "displayName": "TS Type Meter",
+  "description": "VS Code extension that measures TypeScript type resolution time and structural complexity.",
+  "version": "0.1.0",
+  "publisher": "elianguitarra",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.92.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onCommand:tsTypeMeter.analyzeSelection",
+    "onCommand:tsTypeMeter.analyzeFile"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "tsTypeMeter.analyzeSelection",
+        "title": "TS Type Meter: Analyze Selection"
+      },
+      {
+        "command": "tsTypeMeter.analyzeFile",
+        "title": "TS Type Meter: Analyze Active File"
+      }
+    ],
+    "configuration": {
+      "title": "TS Type Meter",
+      "properties": {
+        "tsTypeMeter.enableCodeLens": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show complexity and timing CodeLens entries above TypeScript declarations."
+        },
+        "tsTypeMeter.enableHover": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show type complexity and timing information on hover."
+        },
+        "tsTypeMeter.maxProperties": {
+          "type": "number",
+          "default": 64,
+          "minimum": 8,
+          "maximum": 512,
+          "description": "Maximum properties inspected while estimating type complexity."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "check": "tsc -p ./ --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "@types/vscode": "^1.92.0",
+    "typescript": "^5.8.3"
+  }
+}
