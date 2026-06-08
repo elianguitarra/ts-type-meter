@@ -10,6 +10,7 @@ It adds:
 - A structured report that separates program build time, checker lookup time, and type stringification time.
 - Cached measurements keyed by document URI, version, cursor offset, and selected range.
 - A built-in benchmark command using a pathological TypeScript fixture.
+- Automated tests for the structural complexity scorer.
 
 This project was built for the TSPerf Grand Challenge: a MIT-licensed VS Code plugin that helps developers see type complexity and the time needed to load a type.
 
@@ -36,6 +37,7 @@ The score is intended for comparing types within a project. It is not a formal T
 ```powershell
 npm install
 npm run compile
+npm test
 ```
 
 Then open this folder in VS Code and run the extension host.

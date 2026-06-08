@@ -21,6 +21,7 @@ It implements:
 - Deterministic structural complexity scoring for unions, intersections, generics, properties, signatures, and nested object shapes.
 - Cached measurements keyed by document URI, version, offset, selected range, and scoring settings.
 - A pathological fixture for comparing recursive/conditional/mapped types.
+- Automated `node:test` coverage for the structural complexity scorer.
 
 ## Validation
 
@@ -34,7 +35,7 @@ vsce package --no-dependencies --allow-star-activation
 Generated artifact:
 
 ```text
-ts-type-meter-0.1.1.vsix
+ts-type-meter-0.1.2.vsix
 ```
 
 ## Payout

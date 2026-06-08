@@ -2,7 +2,7 @@
   "name": "ts-type-meter",
   "displayName": "TS Type Meter",
   "description": "VS Code extension that measures TypeScript type resolution time and structural complexity.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "elianguitarra",
   "license": "MIT",
   "repository": {
@@ -82,7 +82,8 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "check": "tsc -p ./ --noEmit"
+    "check": "tsc -p ./ --noEmit",
+    "test": "npm run compile && node --test test/*.test.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.15.30",
